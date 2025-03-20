@@ -1,115 +1,63 @@
-import dictionary as d
-import richWord as rw
+import datetime
+import richWord
 
-class MultiDictionary:
+class Model: #CLASS MODEL IMPORTA CLASS DI DATI
 
     def __init__(self):
-        self._english = d.Dictionary([], "english")
-        self._italian = d.Dictionary([], "italian")
-        self._spanish = d.Dictionary([], "spanish")
+       self.dizionario = None
 
-        self._english.loadDictionary("resources/English.txt")
-        self._italian.loadDictionary("resources/Italian.txt")
-        self._spanish.loadDictionary("resources/Spanish.txt")
+    #def printDic(self):
+        #print
+        #assert isinstance(self.dizionario, object)
+        #self.dizionario
 
-    def printDic(self, language):
-        if language == "english":
-            self._english.printAll()
-        elif language == "italian":
-            self._italian.printAll()
-        elif language == "spanish":
-            self._spanish.printAll()
-        else:
-            print("Language not supported")
+    def searchWord(self, listatxt):
+        start = datetime.datetime.now()
+        errors = []
+        for i in listatxt:
+            r = richWord.RichWord(i)
+            if i not in self.dizionario.setdizionario:
+                errors.append(i)
+            else:
+                r.esito = True
+        end = datetime.datetime.now()
+        print(f"tempo impiegato: {end-start}")
+        if errors:
+            return errors
 
-    def searchWord(self, words, language):
-        # words is a list of strings
-        parole = []
+    def searchWordLinear(self, listatxt):
+        errors = []
+        for i in listatxt:
+            r = richWord.RichWord(i)
+            for k in self.dizionario.setdizionario:
+                if i == k:
+                    r.esito = True
+            if not r.esito:
+                errors.append(i)
+        if errors:
+            return errors
 
-        for word in words:
-            word = word.lower()
-            found = False
-            richW = rw.RichWord(word)
-            if language == "english":
-                if self._english.dict.__contains__(word):
-                    found = True
-            elif language == "italian":
-                if self._italian.dict.__contains__(word):
-                    found = True
-            elif language == "spanish":
-                if self._spanish.dict.__contains__(word):
-                    found = True
-            if (found):
-                richW.corretta = True
-
-            parole.append(richW)
-
-        return parole
-
-    def searchWordLinear(self, words, language):
-        # words is a list of strings
-        parole = []
-
-        for word in words:
-            word = word.lower()
-            found = False
-            richW = rw.RichWord(word)
-            if language == "english":
-                for entry in self._english.dict:
-                    if entry == word:
-                        found = True
-            elif language == "italian":
-                for entry in self._italian.dict:
-                    if entry == word:
-                        found = True
-            elif language == "spanish":
-                for entry in self._spanish.dict:
-                    if entry == word:
-                        found = True
-            if (found):
-                richW.corretta = True
-
-            parole.append(richW)
-
-        return parole
-
-    def searchWordDichotomic(self, words, language):
-        # words is a list of strings
-        parole = []
-
-        for word in words:
-            word = word.lower()
-            found = False
-            richW = rw.RichWord(word)
-            if language == "english":
-                currentDic = self._english.dict
-                found = dichotomicSearch(word, currentDic)
-            elif language == "italian":
-                currentDic = self._italian.dict
-                found = dichotomicSearch(word, currentDic)
-            elif language == "spanish":
-                currentDic = self._spanish.dict
-                found = dichotomicSearch(word, currentDic)
-            if (found):
-                richW.corretta = True
-
-            parole.append(richW)
-
-        return parole
-
-
-def dichotomicSearch(word, currentDic):
-    start = 0
-    end = len(currentDic)
-
-    while (start != end):
-        mean = start + int((end - start)/2)
-        currentW = currentDic[mean]
-        if word == currentW:
-            return True
-        elif word > currentW:  # in python < applied to strings gives True if the first string is before in lexicographic order
-            start = mean+1
-        else:
-            end = mean
-
-    return False
+    def searchWordDichotomic(self, listatxt):
+        start = datetime.datetime.now()
+        errors = []
+        for i in listatxt:
+            r = richWord.RichWord(i)
+            setordinato = sorted(self.dizionario.setdizionario)
+            sx = 0
+            dx = len(setordinato) - 1
+            while sx <= dx:
+                centro = (sx+dx)//2
+                p = setordinato[centro]
+                if i == p:
+                    r.esito = True
+                    break
+                elif i < p:
+                    dx = centro - 1
+                else:
+                    sx = centro + 1
+            if not r.esito:
+                errors.append(i)
+        end = datetime.datetime.now()
+        print(f"tempo impiegato: {end - start}")
+        if errors:
+            return errors
