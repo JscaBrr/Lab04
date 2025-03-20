@@ -116,7 +116,7 @@ class View: #CLASS VIEW CON ATTRIBUTO CONTROLLER
             width=self.page.width,
             controls=[]  # Inizialmente vuoto, aggiungeremo i risultati dinamicamente
         )
-        self.__txtIn = ft.TextField(label="Add your sentence here:", on_change = self.textinput, autofocus = True,  width=self.__languagedropdown.width * 0.50 )
+        self.__txtIn = ft.TextField(label="Add your sentence here:", on_change = self.textinput, autofocus = True,  width=self.__languagedropdown.width * 0.50, hint_text = "Sentence")
         self.__spellcheckbutton = ft.ElevatedButton(
             text="Spell Check",
             on_click=self.spellcheck,  #esecuzione di funzione interna (--> contiene chiamata al controller)
